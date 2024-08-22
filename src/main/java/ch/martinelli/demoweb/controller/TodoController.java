@@ -1,6 +1,7 @@
 package ch.martinelli.demoweb.controller;
 
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,13 +16,19 @@ import java.util.Optional;
 @RestController
 public class TodoController {
 
-    private final List<Todo> todos = new ArrayList<>();
+    private final TodoRepository todoRepository;
+
+    public TodoController(TodoRepository todoRepository) {
+        this.todoRepository = todoRepository;
+    }
 
     @PostConstruct
     public void init() {
-        todos.add(new Todo(1, "Blumen giessen"));
-        todos.add(new Todo(2, "Rasen mähen"));
-        todos.add(new Todo(3, "Einkaufen"));
+        todoRepository.saveAll(List.of(
+                new Todo("Blumen giessen"),
+                new Todo("Rasen mähen"),
+                new Todo("Einkaufen"))
+        );
     }
 
     @PostMapping
@@ -29,34 +36,31 @@ public class TodoController {
         if (todo.getId() != null) {
             return ResponseEntity.badRequest().build();
         } else {
-            int id = todos.stream().max(Comparator.comparing(Todo::getId)).map(Todo::getId).orElse(0);
-            todo.setId(++id);
-            todos.add(todo);
+            todoRepository.save(todo);
             return ResponseEntity.created(URI.create(todo.getId().toString())).build();
         }
     }
 
     @GetMapping
     public List<Todo> getAll() {
-        return todos;
+        return todoRepository.findAll();
     }
 
     @GetMapping("{id}")
     public ResponseEntity<Todo> get(int id) {
-        return todos.stream().filter(todo -> todo.getId() == id)
-                .findFirst()
+        return todoRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Object> delete(@PathVariable int id) {
-        Optional<Todo> optionalTodo = todos.stream().filter(todo -> todo.getId() == id).findFirst();
+        Optional<Todo> optionalTodo = todoRepository.findById(id);
         if (optionalTodo.isEmpty()) {
             return ResponseEntity.notFound().build();
         } else {
-            todos.remove(optionalTodo.get());
-            return ResponseEntity.ok().build();
+            todoRepository.deleteById(id);
+            throw new RuntimeException();
         }
     }
 }
