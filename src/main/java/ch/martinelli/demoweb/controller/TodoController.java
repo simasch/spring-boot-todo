@@ -45,7 +45,7 @@ public class TodoController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Todo> get(int id) {
+    public ResponseEntity<Todo> get(@PathVariable int id) {
         return todoRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -58,7 +58,7 @@ public class TodoController {
             return ResponseEntity.notFound().build();
         } else {
             todoRepository.deleteById(id);
-            throw new RuntimeException();
+            return ResponseEntity.ok().build();
         }
     }
 }
