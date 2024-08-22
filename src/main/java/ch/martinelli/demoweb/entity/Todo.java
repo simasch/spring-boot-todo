@@ -1,4 +1,4 @@
-package ch.martinelli.demoweb.controller;
+package ch.martinelli.demoweb.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

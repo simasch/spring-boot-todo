@@ -1,14 +1,12 @@
 package ch.martinelli.demoweb.controller;
 
+import ch.martinelli.demoweb.entity.Todo;
+import ch.martinelli.demoweb.repository.TodoRepository;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 

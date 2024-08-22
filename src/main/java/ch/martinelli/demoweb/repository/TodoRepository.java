@@ -1,5 +1,6 @@
-package ch.martinelli.demoweb.controller;
+package ch.martinelli.demoweb.repository;
 
+import ch.martinelli.demoweb.entity.Todo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
